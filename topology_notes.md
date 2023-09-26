@@ -6,7 +6,7 @@
 | leaf2_server1 | eth1      | ge-0/0/3  | apstra-esi-001-leaf2    |
 | leaf3_server1 | eth1      | ge-0/0/2  | apstra-single-001-leaf1 |
 | rack1_server1 | eth1      | ge-0/0/2  | apstra-esi-001-leaf1    |
-| rack1_server1 | eth2      | ge-0/0/2  | apstra-esi-001-leaf1    |
+| rack1_server1 | eth2      | ge-0/0/2  | apstra-esi-001-leaf2    |
 
 ## Install Tailscale on each VM
 ```shell

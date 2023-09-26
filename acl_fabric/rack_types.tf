@@ -6,78 +6,32 @@ locals {
   server_ld = "AOS-2x10-1"
 }
 
-resource "apstra_rack_type" "lab_guide_single" {
-  name                       = "apstra-single"
+resource "apstra_rack_type" "rack_a" {
+  name                       = "rack_a"
   fabric_connectivity_design = "l3clos"
   leaf_switches = {
-    apstra-single = {
-      logical_device_id = "virtual-7x10-1"
-      spine_link_count  = 1
-      spine_link_speed  = "10G"
-    }
-  }
-  generic_systems = {
-    single-server = {
-      count             = 1
-      logical_device_id = "AOS-1x10-1"
-      links = {
-        single-link = {
-          target_switch_name = "apstra-single"
-          links_per_switch   = 1
-          speed              = "10G"
-        }
-      }
-    }
-  }
-}
-
-resource "apstra_rack_type" "lab_guide_esi" {
-  name                       = "apstra-esi"
-  fabric_connectivity_design = "l3clos"
-  leaf_switches = {
-    apstra-esi = {
+    leaf_a = {
       logical_device_id = "virtual-7x10-1"
       spine_link_count    = 1
       spine_link_speed    = "10G"
       redundancy_protocol = "esi"
     }
+#    leaf_b = {
+#      logical_device_id = "virtual-7x10-1"
+#      spine_link_count    = 1
+#      spine_link_speed    = "10G"
+#    }
   }
-  generic_systems = {
-    dual-server = {
-      count             = 1
-      logical_device_id = "AOS-2x10-1"
-      links = {
-        redundant-link = {
-          target_switch_name = "apstra-esi"
-          links_per_switch   = 1
-          speed              = "10G"
-          lag_mode           = "lacp_active"
-        }
-      }
-    }
-    single-server-1 = {
-      count             = 1
-      logical_device_id = "AOS-1x10-1"
-      links = {
-        single-link = {
-          target_switch_name = "apstra-esi"
-          links_per_switch   = 1
-          speed              = "10G"
-          switch_peer        = "first"
-        }
-      }
-    }
-    single-server-2 = {
-      count             = 1
-      logical_device_id = "AOS-1x10-1"
-      links = {
-        single-link = {
-          target_switch_name = "apstra-esi"
-          links_per_switch   = 1
-          speed              = "10G"
-          switch_peer        = "second"
-        }
-      }
+}
+
+resource "apstra_rack_type" "rack_b" {
+  name                       = "rack_b"
+  fabric_connectivity_design = "l3clos"
+  leaf_switches = {
+    leaf_a = {
+      logical_device_id = "virtual-7x10-1"
+      spine_link_count  = 1
+      spine_link_speed  = "10G"
     }
   }
 }

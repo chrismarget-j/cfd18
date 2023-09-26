@@ -9,7 +9,8 @@ resource "apstra_template_rack_based" "cfd_18" {
     logical_device_id = "virtual-7x10-1"
   }
   rack_infos = {
-    (apstra_rack_type.rack_a.id)    = { count = 1 }
-    (apstra_rack_type.rack_b.id) = { count = 1 }
+    (apstra_rack_type.rack.id)    = { count = 3 }
+#    (apstra_rack_type.rack_a.id)    = { count = 1 }
+#    (apstra_rack_type.rack_b.id) = { count = 1 }
   }
 }

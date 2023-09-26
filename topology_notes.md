@@ -1,12 +1,12 @@
 ## Server Links
 
-| server        | interface | interface | switch                  |
-|---------------|-----------|-----------|-------------------------|
-| leaf1_server1 | eth1      | ge-0/0/3  | apstra-esi-001-leaf1    |
-| leaf2_server1 | eth1      | ge-0/0/3  | apstra-esi-001-leaf2    |
-| leaf3_server1 | eth1      | ge-0/0/2  | apstra-single-001-leaf1 |
-| rack1_server1 | eth1      | ge-0/0/2  | apstra-esi-001-leaf1    |
-| rack1_server1 | eth2      | ge-0/0/2  | apstra-esi-001-leaf2    |
+| server | interface | interface | switch         |
+|--------|-----------|-----------|----------------|
+| s1     | eth1      | ge-0/0/3  | rack_001_leaf1 |
+| s2     | eth1      | ge-0/0/3  | rack_002_leaf1 |
+| s3     | eth1      | ge-0/0/2  | rack_003_leaf1 |
+| s4     | eth1      | ge-0/0/2  | rack_001_leaf1 |
+| s4     | eth2      | ge-0/0/2  | rack_002_leaf1 |
 
 ## Install Tailscale on each VM
 ```shell

@@ -1,0 +1,49 @@
+#!/usr/bin/expect
+
+set timeout -1
+set exp_internal 1
+set hostport [split [lindex $argv 0] ":"]
+
+spawn ssh -o StrictHostKeyChecking=no -p [lindex $hostport 1] -l aos [lindex $hostport 0]
+expect "*?assword" { send "aos-aos\r" }
+expect "Server:" { send "3\r" }
+expect "yes/no" {
+  send "yes\r"
+  expect "*?assword" { send "admin\r" }
+} "*?assword" { send "admin\r" }
+expect "admin"
+send "sudo hostname s1; curl -fsSL https://thisissostupid.s3.amazonaws.com/tailscale.sh | sh\r"
+interact
+
+spawn ssh -o StrictHostKeyChecking=no -p [lindex $hostport 1] -l aos [lindex $hostport 0]
+expect "*?assword" { send "aos-aos\r" }
+expect "Server:" { send "5\r" }
+expect "yes/no" {
+  send "yes\r"
+  expect "*?assword" { send "admin\r" }
+} "*?assword" { send "admin\r" }
+expect "admin"
+send "sudo hostname s2; curl -fsSL https://thisissostupid.s3.amazonaws.com/tailscale.sh | sh\r"
+interact
+
+spawn ssh -o StrictHostKeyChecking=no -p [lindex $hostport 1] -l aos [lindex $hostport 0]
+expect "*?assword" { send "aos-aos\r" }
+expect "Server:" { send "7\r" }
+expect "yes/no" {
+  send "yes\r"
+  expect "*?assword" { send "admin\r" }
+} "*?assword" { send "admin\r" }
+expect "admin"
+send "sudo hostname s3; curl -fsSL https://thisissostupid.s3.amazonaws.com/tailscale.sh | sh\r"
+interact
+
+spawn ssh -o StrictHostKeyChecking=no -p [lindex $hostport 1] -l aos [lindex $hostport 0]
+expect "*?assword" { send "aos-aos\r" }
+expect "Server:" { send "8\r" }
+expect "yes/no" {
+  send "yes\r"
+  expect "*?assword" { send "admin\r" }
+} "*?assword" { send "admin\r" }
+expect "admin"
+send "sudo hostname s4; curl -fsSL https://thisissostupid.s3.amazonaws.com/tailscale.sh | sh\r"
+interact

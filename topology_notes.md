@@ -11,7 +11,7 @@
 ## Install Tailscale on each VM
 ```shell
 sudo apt-get update && \
-sudo apt-get install ca-certificates && \
+sudo apt-get install -y ca-certificates && \
 curl -fsSL https://tailscale.com/install.sh | sh && \
 sudo tailscale up
 ```

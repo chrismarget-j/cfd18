@@ -25,6 +25,7 @@ resource "apstra_datacenter_generic_system" "s1" {
       target_switch_if_transform_id = 1
     },
   ]
+  depends_on = [apstra_datacenter_device_allocation.each]
 }
 
 resource "apstra_datacenter_generic_system" "s2" {
@@ -39,6 +40,7 @@ resource "apstra_datacenter_generic_system" "s2" {
       target_switch_if_transform_id = 1
     },
   ]
+  depends_on = [apstra_datacenter_device_allocation.each]
 }
 
 resource "apstra_datacenter_generic_system" "s3" {
@@ -53,6 +55,7 @@ resource "apstra_datacenter_generic_system" "s3" {
       target_switch_if_transform_id = 1
     },
   ]
+  depends_on = [apstra_datacenter_device_allocation.each]
 }
 
 resource "apstra_datacenter_generic_system" "s4" {
@@ -74,4 +77,5 @@ resource "apstra_datacenter_generic_system" "s4" {
       target_switch_if_transform_id = 1
     },
   ]
+  depends_on = [apstra_datacenter_device_allocation.each]
 }

@@ -12,8 +12,14 @@ resource "apstra_datacenter_resource_pool_allocation" "fabric_ip4" {
   pool_ids     = ["Private-192_168_0_0-16"]
 }
 
-resource "apstra_datacenter_resource_pool_allocation" "fabric_vni" {
+resource "apstra_datacenter_resource_pool_allocation" "fabric_evpn_l3_vni" {
   blueprint_id    = apstra_datacenter_blueprint.cfd_18.id
   role            = "evpn_l3_vnis"
+  pool_ids        = ["Default-10000-20000"]
+}
+
+resource "apstra_datacenter_resource_pool_allocation" "fabric_vni" {
+  blueprint_id    = apstra_datacenter_blueprint.cfd_18.id
+  role            = "vni_virtual_network_ids"
   pool_ids        = ["Default-10000-20000"]
 }

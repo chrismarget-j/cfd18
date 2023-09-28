@@ -12,6 +12,9 @@ data "external" "server_ip" {
 
 resource "null_resource" "install_docker" {
   for_each = local.servers
+  triggers = {
+    server_ip = data.external.server_ip[each.key].result.ip
+  }
 
   provisioner "remote-exec" {
     connection {

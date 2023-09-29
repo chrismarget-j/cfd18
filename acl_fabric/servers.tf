@@ -19,7 +19,7 @@ resource "apstra_datacenter_generic_system" "s1" {
   tags         = ["S1"]
   links = [
     {
-      tags                          = ["S1"]
+      tags                          = ["S1", "docker"]
       target_switch_id              = data.apstra_datacenter_system.rack_1_leaf.attributes.id
       target_switch_if_name         = "ge-0/0/3"
       target_switch_if_transform_id = 1
@@ -34,7 +34,7 @@ resource "apstra_datacenter_generic_system" "s2" {
   tags         = ["S2"]
   links = [
     {
-      tags                          = ["S2"]
+      tags                          = ["S2", "docker"]
       target_switch_id              = data.apstra_datacenter_system.rack_2_leaf.attributes.id
       target_switch_if_name         = "ge-0/0/3"
       target_switch_if_transform_id = 1
@@ -49,7 +49,7 @@ resource "apstra_datacenter_generic_system" "s3" {
   tags         = ["S3"]
   links = [
     {
-      tags                          = ["S3"]
+      tags                          = ["S3", "docker"]
       target_switch_id              = data.apstra_datacenter_system.rack_3_leaf.attributes.id
       target_switch_if_name         = "ge-0/0/2"
       target_switch_if_transform_id = 1

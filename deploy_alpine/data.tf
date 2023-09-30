@@ -5,9 +5,9 @@ data "terraform_remote_state" "fabric_setup" {
   }
 }
 
-data "terraform_remote_state" "worker_setup" {
+data "terraform_remote_state" "setup_docker" {
   backend = "local"
   config = {
-    path = "../worker_setup/terraform.tfstate"
+    path = "../setup_docker/terraform.tfstate"
   }
 }

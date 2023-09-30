@@ -4,6 +4,32 @@ set timeout -1
 set exp_internal 1
 set hostport [split [lindex $argv 0] ":"]
 
+if { $argc == 2 } {
+  set selection [lindex $argv 1]
+  switch [lindex $argv 1] {
+    1 { set menuitem 3 }
+    2 { set menuitem 5 }
+    3 { set menuitem 7 }
+    4 { set menuitem 8 }
+    default {
+      puts "only choice 1-4 allowed\r"
+      exit
+    }
+  }
+
+  spawn ssh -o StrictHostKeyChecking=no -p [lindex $hostport 1] -l aos [lindex $hostport 0]
+  expect "*?assword" { send "aos-aos\r" }
+  expect "Server:" { send "$menuitem\r" }
+  expect "yes/no" {
+    send "yes\r"
+    expect "*?assword" { send "admin\r" }
+  } "*?assword" { send "admin\r" }
+  expect "admin"
+  send "sudo hostname s[lindex $argv 1]; curl -fsSL https://thisissostupid.s3.amazonaws.com/tailscale.sh | sh\r"
+  interact
+  exit
+}
+
 spawn ssh -o StrictHostKeyChecking=no -p [lindex $hostport 1] -l aos [lindex $hostport 0]
 expect "*?assword" { send "aos-aos\r" }
 expect "Server:" { send "3\r" }

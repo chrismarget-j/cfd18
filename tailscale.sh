@@ -14,7 +14,9 @@ then
 fi
 
 mkdir -pm 700 ~/.ssh
-curl https://github.com/chrismarget-j.keys >> ~/.ssh/authorized_keys
-curl https://github.com/bwjuniper.keys >> ~/.ssh/authorized_keys
-uniq ~/.ssh/authorized_keys > ~/.ssh/authorized_keys.uniq
+for user in chrismarget-j bwjuniper
+do
+  curl -fsSL https://github.com/${user}.keys | sed "s/$/ $user/" >> ~/.ssh/authorized_keys
+done
+sort -u ~/.ssh/authorized_keys > ~/.ssh/authorized_keys.uniq
 mv ~/.ssh/authorized_keys.uniq ~/.ssh/authorized_keys

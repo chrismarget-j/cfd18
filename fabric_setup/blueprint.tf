@@ -13,6 +13,10 @@ resource "apstra_blueprint_deployment" "cfd_18" {
     apstra_datacenter_resource_pool_allocation.fabric_evpn_l3_vni,
     apstra_datacenter_resource_pool_allocation.fabric_ip4,
     apstra_datacenter_resource_pool_allocation.fabric_vni,
+    apstra_datacenter_generic_system.s1,
+    apstra_datacenter_generic_system.s2,
+    apstra_datacenter_generic_system.s3,
+    apstra_datacenter_generic_system.s4,
   ]
   comment      = "Deployment by Terraform {{.TerraformVersion}}, Apstra provider {{.ProviderVersion}}, User $USER."
 }

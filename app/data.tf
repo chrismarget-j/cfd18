@@ -11,4 +11,3 @@ data "terraform_remote_state" "worker_setup" {
     path = "../worker_setup/terraform.tfstate"
   }
 }
-

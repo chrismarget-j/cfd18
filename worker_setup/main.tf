@@ -1,42 +1,35 @@
 locals {
-  servers  = toset(["s1", "s2", "s3", "s4"])
-  username = "admin"
-}
-
-data "external" "server_ip" {
-  for_each = local.servers
-  program = [
-    "sh", "-c", "host ${each.key} | awk '{print \"{\\\"ip\\\":\\\"\"$NF\"\\\"}\"}'"
+  worker_nodes = [
+    "s1",
+    "s2",
+    "s3",
   ]
+  images = {
+    nginx = "nginx:1.25.2",
+    alpine = "alpine:3.18.4",
+  }
 }
 
-resource "null_resource" "install_docker" {
-  for_each = local.servers
-  triggers = {
-    server_ip = data.external.server_ip[each.key].result.ip
-  }
+module "install_docker" {
+  for_each = toset(local.worker_nodes)
+  source   = "./mod_install_docker"
+  hostname = each.key
+}
 
-  provisioner "remote-exec" {
-    connection {
-      type        = "ssh"
-      user        = local.username
-      host        = each.key
-      private_key = file("../.ssh_key")
-    }
+module "docker_image_s1" {
+  source   = "./mod_load_images"
+  hostname = "s1"
+  images   = local.images
+}
 
-    inline = [
-      "echo \"127.0.0.1 ${each.key}\" | sudo tee -a /etc/hosts",
-      "sudo hostname ${each.key}",
-      "ip -o link list | grep @eth1 | awk '{print $2}' | sed 's/@.*//' | xargs -rn 1 sudo ip link del",
-      "ip -o link list | grep @bond0 | awk '{print $2}' | sed 's/@.*//' | xargs -rn 1 sudo ip link del",
-      "ip -o link list | grep ' bond0:' | awk '{print $2}' | sed 's/://' | xargs -rn 1 sudo ip link del",
-      "sudo apt-get install -y apt-transport-https software-properties-common",
-      "curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -",
-      "sudo add-apt-repository -y 'deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable'",
-      "sudo apt update -q",
-      "sudo apt-cache policy docker-ce",
-      "sudo apt-get install -y -q docker-ce",
-      "sudo usermod -aG docker ${local.username}",
-    ]
-  }
+module "docker_image_s2" {
+  source   = "./mod_load_images"
+  hostname = "s2"
+  images   = local.images
+}
+
+module "docker_image_s3" {
+  source   = "./mod_load_images"
+  hostname = "s3"
+  images   = local.images
 }

@@ -29,3 +29,9 @@ module "s3_network" {
   vlan   = module.apstra_network.vlan_id
   worker_instance = 3
 }
+
+resource "apstra_blueprint_deployment" "cfd_18" {
+  blueprint_id = data.terraform_remote_state.setup_fabric.outputs["blueprint_id"]
+  depends_on = [ module.apstra_network ]
+  comment      = "Network deployment by Terraform {{.TerraformVersion}}, Apstra provider {{.ProviderVersion}}, User $USER."
+}

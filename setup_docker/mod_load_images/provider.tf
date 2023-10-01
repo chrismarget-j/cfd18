@@ -8,5 +8,5 @@ terraform {
 }
 
 provider "docker" {
-  host  = "ssh://admin@${var.hostname}"
+  host  = "tcp://${var.hostname}:2375"
 }

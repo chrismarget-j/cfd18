@@ -1,7 +1,7 @@
-data "terraform_remote_state" "fabric_setup" {
+data "terraform_remote_state" "setup_fabric" {
   backend = "local"
   config = {
-    path = "../fabric_setup/terraform.tfstate"
+    path = "../setup_fabric/terraform.tfstate"
   }
 }
 

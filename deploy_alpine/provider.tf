@@ -18,15 +18,15 @@ provider "apstra" {
 
 provider "docker" {
   alias = "s1"
-  host = "ssh://admin@s1"
+  host  = "tcp://s1:2375"
 }
 
 provider "docker" {
   alias = "s2"
-  host = "ssh://admin@s2"
+  host  = "tcp://s2:2375"
 }
 
 provider "docker" {
   alias = "s3"
-  host = "ssh://admin@s3"
+  host  = "tcp://s3:2375"
 }

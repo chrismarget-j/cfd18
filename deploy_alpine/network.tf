@@ -1,8 +1,8 @@
 module "apstra_network" {
   source = "./mod_network_apstra"
   name = "web"
-  blueprint_id = data.terraform_remote_state.fabric_setup.outputs["blueprint_id"]
-  routing_zone_id = data.terraform_remote_state.fabric_setup.outputs["routing_zone_id"]
+  blueprint_id = data.terraform_remote_state.setup_fabric.outputs["blueprint_id"]
+  routing_zone_id = data.terraform_remote_state.setup_fabric.outputs["routing_zone_id"]
   providers = { apstra = apstra }
 }
 

@@ -17,6 +17,7 @@ resource "apstra_blueprint_deployment" "cfd_18" {
     apstra_datacenter_generic_system.s2,
     apstra_datacenter_generic_system.s3,
     apstra_datacenter_generic_system.s4,
+    apstra_datacenter_connectivity_template_assignment.lb,
   ]
   comment      = "Deployment by Terraform {{.TerraformVersion}}, Apstra provider {{.ProviderVersion}}, User $USER."
 }

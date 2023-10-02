@@ -16,4 +16,3 @@ resource "apstra_datacenter_resource_pool_allocation" "blue_subnets" {
   role            = "virtual_network_svi_subnets"
   pool_ids        = [apstra_ipv4_pool.app.id]
 }
-

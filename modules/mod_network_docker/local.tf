@@ -1,0 +1,3 @@
+locals {
+  interface = "eth1"
+}

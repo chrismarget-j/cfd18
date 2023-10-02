@@ -65,13 +65,13 @@ resource "apstra_datacenter_generic_system" "s4" {
   external     = true
   links = [
     {
-      tags                          = ["S4"]
+      tags                          = ["S4", "eth1"]
       target_switch_id              = data.apstra_datacenter_system.rack_1_leaf.attributes.id
       target_switch_if_name         = "ge-0/0/2"
       target_switch_if_transform_id = 1
     },
     {
-      tags                          = ["S4"]
+      tags                          = ["S4", "eth2"]
       target_switch_id              = data.apstra_datacenter_system.rack_2_leaf.attributes.id
       target_switch_if_name         = "ge-0/0/2"
       target_switch_if_transform_id = 1

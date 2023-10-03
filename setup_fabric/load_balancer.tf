@@ -7,7 +7,8 @@ module "lb_net" {
 
 data "apstra_datacenter_interfaces_by_link_tag" "lb" {
   blueprint_id = apstra_datacenter_blueprint.cfd_18.id
-  tags         = ["S4", "eth1"]
+  tags         = ["S4", local.lb_interface]
+  depends_on   = [apstra_datacenter_generic_system.s4]
 }
 
 resource "apstra_datacenter_connectivity_template_assignment" "lb" {
@@ -19,7 +20,7 @@ resource "apstra_datacenter_connectivity_template_assignment" "lb" {
 resource "null_resource" "lb_setup" {
   triggers = {
     vlan = module.lb_net.vlan_id
-    intf = "eth1.${module.lb_net.vlan_id}"
+    intf = "${local.lb_interface}.${module.lb_net.vlan_id}"
   }
 
   connection {
@@ -30,21 +31,24 @@ resource "null_resource" "lb_setup" {
   }
 
   provisioner "file" {
-    source = "haproxy"
+    source      = "haproxy"
     destination = "/home/admin"
   }
 
   provisioner "remote-exec" {
     inline = flatten([
+      "mkdir -p /tmp/terraform; cp /tmp/terraform_*.sh /tmp/terraform",
+      "id > /tmp/id",
       "(cd $HOME/haproxy; docker build -t my-haproxy .)",
-      "if ! ip link add link eth1 name ${self.triggers["intf"]} type vlan id ${self.triggers["vlan"]}; then :; fi",
-      "if ! ip link set dev eth1.${module.lb_net.vlan_id} up; then :; fi",
-      "if ! ip addr add ${cidrhost(module.lb_net.subnet, 10)}/${split("/", module.lb_net.subnet)[1]} dev eth1.${module.lb_net.vlan_id}; then :; fi",
+      "if ! sudo ip link add link ${local.lb_interface} name ${self.triggers["intf"]} type vlan id ${self.triggers["vlan"]}; then :; fi",
+      "if ! sudo ip link set dev ${local.lb_interface} up; then :; fi",
+      "if ! sudo ip link set dev ${self.triggers["intf"]} up; then :; fi",
+      "if ! sudo ip addr add ${cidrhost(module.lb_net.subnet, 10)}/${split("/", module.lb_net.subnet)[1]} dev ${self.triggers["intf"]}; then :; fi",
       [for i in apstra_ipv4_pool.app.subnets :
-        "if ! ip route add ${i.network} via ${cidrhost(module.lb_net.subnet, 1)}; then :; fi"
+        "if ! sudo ip route add ${i.network} via ${cidrhost(module.lb_net.subnet, 1)}; then :; fi"
       ],
       "sudo apt-get update -y",
-      "sudo apt-get install -y haproxy",
+      "sudo apt-get install -y --no-install-recommends haproxy",
       #      "echo 7 >> /tmp/log",
       #      "echo \"127.0.0.1 ${each.key}\" | sudo tee -a /etc/hosts",
       #      "sudo hostname ${each.key}",
@@ -63,4 +67,35 @@ resource "null_resource" "lb_setup" {
   #      "ip link del dev ${self.triggers["intf"]}",
   #    ]
   #  }
+}
+
+data "docker_image" "haproxy" {
+  name       = "my-haproxy"
+  depends_on = [null_resource.lb_setup]
+}
+
+resource "docker_container" "haproxy" {
+  image      = data.docker_image.haproxy.id
+  name       = "haproxy"
+  entrypoint = ["/usr/local/sbin/haproxy", "-f", "/etc/haproxy/haproxy.cfg"]
+
+  ports {
+    internal = 80
+    external = 80
+    ip       = "0.0.0.0"
+  }
+
+  ports {
+    internal = 5555
+    external = 5555
+    ip       = "0.0.0.0"
+  }
+
+  ports {
+    internal = 8404
+    external = 8404
+    ip       = "0.0.0.0"
+  }
+
+  depends_on = [null_resource.lb_setup]
 }

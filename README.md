@@ -2,6 +2,8 @@
 
 ### Tested
 
+Tested on MacOS 13.6 with Terraform 1.5.7. I've probably done something which complicates setup using Windows machines.
+
 ### Prerequisites
 - An instance of [Apstra CloudLabs](https://cloudlabs.apstra.com/) *Juniper Customer Lab* AOS_4.1.2_OB up and running.
 - [Github](https://github.com) account with a [trusted ssh key](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account) on your workstation.
@@ -86,7 +88,8 @@ terraform init   # fetch any required terraform providers and modules
 terraform appply # run the project
 ```
 
-> **_NOTE:_**
+> **_NOTE_**
+> 
 > You may encounter an error like this:
 > 
 >> `Error pinging Docker server: error during connect: Get "http://s1:2375/_ping": dial tcp: lookup s1 on 8.8.8.8:53: no such host` 
@@ -99,7 +102,9 @@ work, but Docker/Terraform errors persist, quitting and then restarting Tailscal
 I've found I have to jump though this hoop each time I start or stop the corporate VPN on
 "my" laptop.
 
-> > **_NOTE:_** Docker Hub errors at this stage may be due to the Docker Hub [rate limit](https://docs.docker.com/docker-hub/download-rate-limit/).
+> **_NOTE_**
+> 
+> Docker Hub errors at this stage may be due to the Docker Hub [rate limit](https://docs.docker.com/docker-hub/download-rate-limit/).
 > It's the reason image fetch onto the worker nodes is a separate project. Try again
 > shortly, it'll probably start working.
 
@@ -178,6 +183,12 @@ So far, so good. But this is just baseline setup. We're devops-y *application ow
 Let's deploy an application...
 
 ### Run The `deploy_nginx` Terraform Project
+
+Finally, we're at the state were we can demonstrate seamlessly integrating cloud-style network operations
+into application deployments. Everything up to this point was prerequisite work because Apstra doesn't
+come with Docker, a ready-to-go load balancer, and do forth.
+
+This is the point where we enter "a day in the life of an app-deploy/devops/SRE person".
 
 The `deploy_nginx` project imagines itself a real application deployment.
 

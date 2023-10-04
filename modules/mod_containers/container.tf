@@ -12,8 +12,4 @@ resource "docker_container" "o" {
       container_path = volumes.value
     }
   }
-#  volumes {
-#    host_path      = "/tmp/99-random-color.sh"
-#    container_path = "/docker-entrypoint.d/99-random-color.sh"
-#  }
 }

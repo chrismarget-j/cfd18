@@ -12,8 +12,10 @@ then
   echo 'APT::Install-Recommends \"false\";' | sudo tee /etc/apt/apt.conf.d/99no-recommends
 fi
 
+echo "checking for tailscale..."
 if [ ! -x "/usr/bin/tailscale" ]
 then
+  echo "setting up tailscale..."
   sudo apt-get update -q
   touch /tmp/update
   sudo apt-get install -y ca-certificates
@@ -21,6 +23,7 @@ then
   sudo tailscale up
 fi
 
+echo "setting up ssh trusted key..."
 if [ -e /tmp/github_user ]
 then
   mkdir -pm 700 ~/.ssh
@@ -32,6 +35,7 @@ then
   mv ~/.ssh/authorized_keys.uniq ~/.ssh/authorized_keys
 fi
 
+echo "removing host interfaces configured for cloudlabs guide..."
 ip -o link list | grep @eth1 | awk '{print $2}' | sed 's/@.*//' | xargs -rn 1 sudo ip link del
 ip -o link list | grep @bond0 | awk '{print $2}' | sed 's/@.*//' | xargs -rn 1 sudo ip link del
 ip -o link list | grep ' bond0:' | awk '{print $2}' | sed 's/://' | xargs -rn 1 sudo ip link del

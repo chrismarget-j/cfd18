@@ -21,13 +21,16 @@ then
   sudo tailscale up
 fi
 
-mkdir -pm 700 ~/.ssh
-for user in chrismarget-j bwjuniper
-do
-  curl -fsSL https://github.com/${user}.keys | sed "s/$/ $user/" >> ~/.ssh/authorized_keys
-done
-sort -u ~/.ssh/authorized_keys > ~/.ssh/authorized_keys.uniq
-mv ~/.ssh/authorized_keys.uniq ~/.ssh/authorized_keys
+if [ -e /tmp/github_user ]
+then
+  mkdir -pm 700 ~/.ssh
+  for user in $(cat /tmp/github_user)
+  do
+    curl -fsSL https://github.com/${user}.keys | sed "s/$/ $user/" >> ~/.ssh/authorized_keys
+  done
+  sort -u ~/.ssh/authorized_keys > ~/.ssh/authorized_keys.uniq
+  mv ~/.ssh/authorized_keys.uniq ~/.ssh/authorized_keys
+fi
 
 ip -o link list | grep @eth1 | awk '{print $2}' | sed 's/@.*//' | xargs -rn 1 sudo ip link del
 ip -o link list | grep @bond0 | awk '{print $2}' | sed 's/@.*//' | xargs -rn 1 sudo ip link del

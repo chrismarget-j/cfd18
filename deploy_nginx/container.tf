@@ -5,8 +5,12 @@ module "container_s1" {
   worker_instance = 1
   image           = data.terraform_remote_state.setup_docker.outputs["image_ids"]["nginx"]
   network_id      = local.container_name
-  providers = { docker = docker.s1 }
-  depends_on = [module.s1_network]
+  providers       = { docker = docker.s1 }
+  depends_on      = [module.s1_network]
+  files = {
+    "/home/admin/99-random-color.sh" = "/docker-entrypoint.d/99-random-color.sh"
+    "/home/admin/default.conf"       = "/etc/nginx/conf.d/default.conf"
+  }
 }
 
 module "container_s2" {
@@ -16,8 +20,12 @@ module "container_s2" {
   worker_instance = 2
   image           = data.terraform_remote_state.setup_docker.outputs["image_ids"]["nginx"]
   network_id      = local.container_name
-  providers = { docker = docker.s2 }
-  depends_on = [module.s2_network]
+  providers       = { docker = docker.s2 }
+  depends_on      = [module.s2_network]
+  files = {
+    "/home/admin/99-random-color.sh" = "/docker-entrypoint.d/99-random-color.sh"
+    "/home/admin/default.conf"       = "/etc/nginx/conf.d/default.conf"
+  }
 }
 
 module "container_s3" {
@@ -27,6 +35,10 @@ module "container_s3" {
   worker_instance = 3
   image           = data.terraform_remote_state.setup_docker.outputs["image_ids"]["nginx"]
   network_id      = local.container_name
-  providers = { docker = docker.s3 }
-  depends_on = [module.s3_network]
+  providers       = { docker = docker.s3 }
+  depends_on      = [module.s3_network]
+  files = {
+    "/home/admin/99-random-color.sh" = "/docker-entrypoint.d/99-random-color.sh"
+    "/home/admin/default.conf"       = "/etc/nginx/conf.d/default.conf"
+  }
 }

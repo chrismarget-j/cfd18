@@ -17,3 +17,8 @@ variable "name" {
 variable "network_id" {
   type = string
 }
+
+variable "files" {
+  type = map(string)
+  default = {}
+}

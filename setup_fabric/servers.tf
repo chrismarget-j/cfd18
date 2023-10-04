@@ -1,16 +1,16 @@
 data "apstra_datacenter_system" "rack_1_leaf" {
   blueprint_id = apstra_datacenter_blueprint.cfd_18.id
-  name         = "rack_001_leaf1"
+  name         = "cfd_18_rack_001_leaf1"
 }
 
 data "apstra_datacenter_system" "rack_2_leaf" {
   blueprint_id = apstra_datacenter_blueprint.cfd_18.id
-  name         = "rack_002_leaf1"
+  name         = "cfd_18_rack_002_leaf1"
 }
 
 data "apstra_datacenter_system" "rack_3_leaf" {
   blueprint_id = apstra_datacenter_blueprint.cfd_18.id
-  name         = "rack_003_leaf1"
+  name         = "cfd_18_rack_003_leaf1"
 }
 
 resource "apstra_datacenter_generic_system" "s1" {

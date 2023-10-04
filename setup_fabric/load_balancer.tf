@@ -1,13 +1,13 @@
 module "lb_net" {
   source          = "../modules/mod_apstra_network"
   blueprint_id    = apstra_datacenter_blueprint.cfd_18.id
-  name            = "services"
+  name            = local.lb_net_name
   routing_zone_id = apstra_datacenter_routing_zone.cfd_18.id
 }
 
 data "apstra_datacenter_interfaces_by_link_tag" "lb" {
   blueprint_id = apstra_datacenter_blueprint.cfd_18.id
-  tags         = ["S4", local.lb_interface]
+  tags         = ["S4", "eth1"]
   depends_on   = [apstra_datacenter_generic_system.s4]
 }
 
@@ -20,7 +20,7 @@ resource "apstra_datacenter_connectivity_template_assignment" "lb" {
 resource "null_resource" "lb_setup" {
   triggers = {
     vlan = module.lb_net.vlan_id
-    intf = "${local.lb_interface}.${module.lb_net.vlan_id}"
+    intf = "eth1.${module.lb_net.vlan_id}"
   }
 
   connection {
@@ -40,8 +40,8 @@ resource "null_resource" "lb_setup" {
       "mkdir -p /tmp/terraform; cp /tmp/terraform_*.sh /tmp/terraform",
       "id > /tmp/id",
       "(cd $HOME/haproxy; docker build -t my-haproxy .)",
-      "if ! sudo ip link add link ${local.lb_interface} name ${self.triggers["intf"]} type vlan id ${self.triggers["vlan"]}; then :; fi",
-      "if ! sudo ip link set dev ${local.lb_interface} up; then :; fi",
+      "if ! sudo ip link add link eth1 name ${self.triggers["intf"]} type vlan id ${self.triggers["vlan"]}; then :; fi",
+      "if ! sudo ip link set dev eth1 up; then :; fi",
       "if ! sudo ip link set dev ${self.triggers["intf"]} up; then :; fi",
       "if ! sudo ip addr add ${cidrhost(module.lb_net.subnet, 10)}/${split("/", module.lb_net.subnet)[1]} dev ${self.triggers["intf"]}; then :; fi",
       [for i in apstra_ipv4_pool.app.subnets :

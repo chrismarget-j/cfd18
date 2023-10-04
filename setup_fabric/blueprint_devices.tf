@@ -2,9 +2,9 @@ locals {
   last_octet_to_fabric_name = {
     11 = "spine1"
     12 = "spine2"
-    13 = "rack_001_leaf1"
-    14 = "rack_003_leaf1"
-    15 = "rack_002_leaf1"
+    13 = "cfd_18_rack_001_leaf1"
+    14 = "cfd_18_rack_003_leaf1"
+    15 = "cfd_18_rack_002_leaf1"
   }
 }
 

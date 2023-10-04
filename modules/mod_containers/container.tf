@@ -1,7 +1,7 @@
 resource "docker_container" "o" {
   count = floor(var.container_count / 3) + (var.container_count % 3 >= var.worker_instance ? 1 : 0)
   image = var.image
-  name  = "${var.name}-${count.index * 3 + 1}"
+  name  = "${var.name}-${count.index * 3 + var.worker_instance}"
   networks_advanced {
     name = var.network_id
   }

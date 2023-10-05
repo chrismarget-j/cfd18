@@ -1,4 +1,4 @@
 locals {
-  container_name = "nginx"
+  container_name = "app"
   webserver_count = 3
 }

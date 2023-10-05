@@ -1,4 +1,4 @@
 locals {
-  container_name = "app"
+  container_name = "my_application"
   webserver_count = 3
 }

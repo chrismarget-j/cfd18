@@ -7,10 +7,10 @@ locals {
 }
 
 resource "haproxy_server" "app" {
-  for_each    = local.lb_servers
-  name        = each.key
+  count       = local.webserver_count
+  name        = "app-${count.index}-${local.container_ips[count.index]}"
   port        = 80
-  address     = each.value
+  address     = local.container_ips[count.index]
   parent_name = "app"
   parent_type = "backend"
   check       = true

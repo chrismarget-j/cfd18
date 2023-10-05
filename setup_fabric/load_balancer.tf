@@ -3,6 +3,7 @@ module "lb_net" {
   blueprint_id    = apstra_datacenter_blueprint.cfd_18.id
   name            = local.lb_net_name
   routing_zone_id = apstra_datacenter_routing_zone.cfd_18.id
+  ipv4_subnet     = local.lb_subnet
 }
 
 data "apstra_datacenter_interfaces_by_link_tag" "lb" {
@@ -22,13 +23,13 @@ locals {
 }
 
 resource "docker_image" "lb" {
-    name = "haproxy"
-    build {
-      context = local.haproxy_build_dir
-    }
-    triggers = {
-      dir_sha1 = sha1(join("", [for f in fileset(local.haproxy_build_dir, "*") : filesha1("${local.haproxy_build_dir}/${f}")]))
-    }
+  name = "haproxy"
+  build {
+    context = local.haproxy_build_dir
+  }
+  triggers = {
+    dir_sha1 = sha1(join("", [for f in fileset(local.haproxy_build_dir, "*") : filesha1("${local.haproxy_build_dir}/${f}")]))
+  }
 }
 
 resource "null_resource" "lb_setup" {
@@ -53,19 +54,12 @@ resource "null_resource" "lb_setup" {
       [for i in apstra_ipv4_pool.app.subnets :
         "if ! sudo ip route add ${i.network} via ${cidrhost(module.lb_net.subnet, 1)}; then :; fi"
       ],
-#      "sudo apt-get update -y",
-#      "sudo apt-get install -y --no-install-recommends haproxy",
-      #      "echo 7 >> /tmp/log",
-      #      "echo \"127.0.0.1 ${each.key}\" | sudo tee -a /etc/hosts",
-      #      "sudo hostname ${each.key}",
-      #      "sudo apt-get install -y apt-transport-https software-properties-common",
-      #      "curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -",
-      #      "sudo add-apt-repository -y 'deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable'",
-      #      "sudo apt update -q",
-      #      "sudo apt-cache policy docker-ce",
-      #      "sudo apt-get install -y -q docker-ce",
-      #      "sudo usermod -aG docker ${local.username}",
     ])
+  }
+
+  provisioner "remote-exec" {
+    when   = destroy
+    inline = ["if ! sudo ip link del dev ${self.triggers["intf"]}; then :; fi"]
   }
 }
 

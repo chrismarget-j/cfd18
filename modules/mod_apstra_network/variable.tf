@@ -14,3 +14,8 @@ variable "routing_zone_id" {
 variable "name" {
   type = string
 }
+
+variable "ipv4_subnet" {
+  type = string
+  default = null
+}

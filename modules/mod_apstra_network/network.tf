@@ -9,6 +9,7 @@ resource "apstra_datacenter_virtual_network" "o" {
   routing_zone_id              = var.routing_zone_id
   type                         = "vxlan"
   name                         = var.name
+  ipv4_subnet                  = var.ipv4_subnet
   ipv4_connectivity_enabled    = true
   ipv4_virtual_gateway_enabled = true
   reserve_vlan                 = var.vlan_id != null

@@ -1,4 +1,4 @@
 locals {
   container_name = "nginx"
-  webserver_count = 7
+  webserver_count = 3
 }

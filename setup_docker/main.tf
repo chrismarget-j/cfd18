@@ -1,7 +1,7 @@
 locals {
   images = {
     nginx = "nginx:1.25.2",
-    alpine = "alpine:3.18.4",
+#    alpine = "alpine:3.18.4",
   }
 }
 

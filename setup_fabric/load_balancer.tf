@@ -17,6 +17,20 @@ resource "apstra_datacenter_connectivity_template_assignment" "lb" {
   connectivity_template_ids = [module.lb_net.ct_tagged]
 }
 
+locals {
+  haproxy_build_dir = "${path.module}/haproxy"
+}
+
+resource "docker_image" "lb" {
+    name = "haproxy"
+    build {
+      context = local.haproxy_build_dir
+    }
+    triggers = {
+      dir_sha1 = sha1(join("", [for f in fileset(local.haproxy_build_dir, "*") : filesha1("${local.haproxy_build_dir}/${f}")]))
+    }
+}
+
 resource "null_resource" "lb_setup" {
   triggers = {
     vlan = module.lb_net.vlan_id
@@ -30,16 +44,8 @@ resource "null_resource" "lb_setup" {
     private_key = file("../.ssh_key")
   }
 
-  provisioner "file" {
-    source      = "haproxy"
-    destination = "/home/admin"
-  }
-
   provisioner "remote-exec" {
     inline = flatten([
-      "mkdir -p /tmp/terraform; cp /tmp/terraform_*.sh /tmp/terraform",
-      "id > /tmp/id",
-      "(cd $HOME/haproxy; docker build -t my-haproxy .)",
       "if ! sudo ip link add link eth1 name ${self.triggers["intf"]} type vlan id ${self.triggers["vlan"]}; then :; fi",
       "if ! sudo ip link set dev eth1 up; then :; fi",
       "if ! sudo ip link set dev ${self.triggers["intf"]} up; then :; fi",
@@ -47,8 +53,8 @@ resource "null_resource" "lb_setup" {
       [for i in apstra_ipv4_pool.app.subnets :
         "if ! sudo ip route add ${i.network} via ${cidrhost(module.lb_net.subnet, 1)}; then :; fi"
       ],
-      "sudo apt-get update -y",
-      "sudo apt-get install -y --no-install-recommends haproxy",
+#      "sudo apt-get update -y",
+#      "sudo apt-get install -y --no-install-recommends haproxy",
       #      "echo 7 >> /tmp/log",
       #      "echo \"127.0.0.1 ${each.key}\" | sudo tee -a /etc/hosts",
       #      "sudo hostname ${each.key}",
@@ -61,21 +67,15 @@ resource "null_resource" "lb_setup" {
       #      "sudo usermod -aG docker ${local.username}",
     ])
   }
-  #  provisioner "remote-exec" {
-  #    when = "destroy"
-  #    inline = [
-  #      "ip link del dev ${self.triggers["intf"]}",
-  #    ]
-  #  }
 }
 
-data "docker_image" "haproxy" {
-  name       = "my-haproxy"
-  depends_on = [null_resource.lb_setup]
-}
+#data "docker_image" "haproxy" {
+#  name       = "my-haproxy"
+#  depends_on = [null_resource.lb_setup]
+#}
 
 resource "docker_container" "haproxy" {
-  image      = data.docker_image.haproxy.id
+  image      = docker_image.lb.image_id
   name       = "haproxy"
   entrypoint = ["/usr/local/sbin/haproxy", "-f", "/etc/haproxy/haproxy.cfg"]
 

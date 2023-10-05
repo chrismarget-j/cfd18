@@ -8,6 +8,10 @@ terraform {
       source  = "kreuzwerker/docker"
       version = "3.0.2"
     }
+    haproxy = {
+      source  = "SepehrImanian/haproxy"
+      version = "0.0.7"
+    }
   }
 }
 
@@ -29,4 +33,10 @@ provider "docker" {
 provider "docker" {
   alias = "s3"
   host  = "tcp://s3:2375"
+}
+
+provider "haproxy" {
+  url         = "http://s4:5555"
+  username    = "admin"
+  password    = "mypassword"
 }

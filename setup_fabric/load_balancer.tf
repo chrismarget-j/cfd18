@@ -46,15 +46,12 @@ resource "null_resource" "lb_setup" {
   }
 
   provisioner "remote-exec" {
-    inline = flatten([
+    inline = [
       "if ! sudo ip link add link eth1 name ${self.triggers["intf"]} type vlan id ${self.triggers["vlan"]}; then :; fi",
       "if ! sudo ip link set dev eth1 up; then :; fi",
       "if ! sudo ip link set dev ${self.triggers["intf"]} up; then :; fi",
       "if ! sudo ip addr add ${cidrhost(module.lb_net.subnet, 10)}/${split("/", module.lb_net.subnet)[1]} dev ${self.triggers["intf"]}; then :; fi",
-      [for i in apstra_ipv4_pool.app.subnets :
-        "if ! sudo ip route add ${i.network} via ${cidrhost(module.lb_net.subnet, 1)}; then :; fi"
-      ],
-    ])
+    ]
   }
 
   provisioner "remote-exec" {
@@ -62,11 +59,6 @@ resource "null_resource" "lb_setup" {
     inline = ["if ! sudo ip link del dev ${self.triggers["intf"]}; then :; fi"]
   }
 }
-
-#data "docker_image" "haproxy" {
-#  name       = "my-haproxy"
-#  depends_on = [null_resource.lb_setup]
-#}
 
 resource "docker_container" "haproxy" {
   image      = docker_image.lb.image_id

@@ -1,11 +1,12 @@
 output "image_ids" {
-  value = {
-    for name in local.image_names : name => one(toset([
+  value = merge(
+    module.docker_image_s4.image_ids,
+    { for name in local.image_names : name => one(toset([
       module.docker_image_s1.image_ids[name],
       module.docker_image_s2.image_ids[name],
       module.docker_image_s3.image_ids[name],
-    ]))
-  }
+    ])) }
+  )
 }
 
 locals {

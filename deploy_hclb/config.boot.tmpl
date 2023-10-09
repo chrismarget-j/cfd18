@@ -63,6 +63,9 @@ protocols {
         }
         neighbor ${tunnel1_vgw_inside_address} {
             remote-as "external"
+            timers {
+                connect 5
+            }
         }
         neighbor ${tunnel2_vgw_inside_address} {
             remote-as "external"

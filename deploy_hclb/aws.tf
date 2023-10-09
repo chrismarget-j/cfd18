@@ -5,10 +5,11 @@ resource "aws_vpc" "o" {
 
 resource "aws_subnet" "o" {
   vpc_id = aws_vpc.o.id
-  cidr_block = cidrsubnet(aws_vpc.o.cidr_block, 8, 0)
+  cidr_block = cidrsubnet(aws_vpc.o.cidr_block, 8, 1)
   tags = {
     Name = "test"
   }
+  availability_zone = "us-east-1b"
 }
 
 resource "aws_internet_gateway" "o" {

@@ -34,7 +34,7 @@ resource "apstra_datacenter_connectivity_template" "bgp" {
   primitives   = [data.apstra_datacenter_ct_bgp_peering_ip_endpoint.bgp.primitive]
 }
 
-resource "apstra_datacenter_connectivity_template_assignment" "o" {
+resource "apstra_datacenter_connectivity_template_assignment" "svi_bgp" {
   blueprint_id              = data.terraform_remote_state.setup_fabric.outputs["blueprint_id"]
   application_point_id      = local.leaf_1_transit_svi_id
   connectivity_template_ids = [apstra_datacenter_connectivity_template.bgp.id]

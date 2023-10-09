@@ -18,19 +18,19 @@ resource "apstra_datacenter_connectivity_template_assignment" "lb" {
   connectivity_template_ids = [module.lb_net.ct_tagged]
 }
 
-locals {
-  haproxy_build_dir = "${path.module}/haproxy"
-}
+#locals {
+#  haproxy_build_dir = "${path.module}/haproxy"
+#}
 
-resource "docker_image" "lb" {
-  name = "haproxy"
-  build {
-    context = local.haproxy_build_dir
-  }
-  triggers = {
-    dir_sha1 = sha1(join("", [for f in fileset(local.haproxy_build_dir, "*") : filesha1("${local.haproxy_build_dir}/${f}")]))
-  }
-}
+#resource "docker_image" "lb" {
+#  name = "haproxy"
+#  build {
+#    context = local.haproxy_build_dir
+#  }
+#  triggers = {
+#    dir_sha1 = sha1(join("", [for f in fileset(local.haproxy_build_dir, "*") : filesha1("${local.haproxy_build_dir}/${f}")]))
+#  }
+#}
 
 resource "null_resource" "lb_setup" {
   triggers = {
@@ -61,7 +61,7 @@ resource "null_resource" "lb_setup" {
 }
 
 resource "docker_container" "haproxy" {
-  image      = docker_image.lb.image_id
+  image      = data.terraform_remote_state.setup_docker.outputs["image_ids"]["haproxy"]
   name       = "haproxy"
   entrypoint = ["/usr/local/sbin/haproxy", "-f", "/etc/haproxy/haproxy.cfg"]
 

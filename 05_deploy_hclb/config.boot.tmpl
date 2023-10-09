@@ -46,12 +46,12 @@ system {
 interfaces {
     loopback     lo { }
     vti vti0 {
-        address ${tunnel1_cgw_inside_address}/30
+        address ${tunnel_1_cgw_inside_address}/30
         description "VPC tunnel 1"
         mtu 1436
     }
     vti vti1 {
-        address ${tunnel2_cgw_inside_address}/30
+        address ${tunnel_2_cgw_inside_address}/30
         description "VPC tunnel 2"
         mtu 1436
     }
@@ -61,13 +61,13 @@ protocols {
         neighbor ${leaf_1_ip} {
             remote-as "external"
         }
-        neighbor ${tunnel1_vgw_inside_address} {
+        neighbor ${tunnel_1_vgw_inside_address} {
             remote-as "external"
             timers {
                 connect 5
             }
         }
-        neighbor ${tunnel2_vgw_inside_address} {
+        neighbor ${tunnel_2_vgw_inside_address} {
             remote-as "external"
         }
     }
@@ -102,12 +102,12 @@ vpn {
         }
         nat-traversal enable
         site-to-site {
-            peer ${tunnel1_address} {
+            peer ${tunnel_1_address} {
                 authentication {
                     mode pre-shared-secret
-                    pre-shared-secret ${tunnel1_preshared_key}
+                    pre-shared-secret ${tunnel_1_preshared_key}
                 }
-                description "VPC tunnel 1"
+                description "VPC tunnel_1"
                 ike-group AWS
                 local-address 172.17.0.3
                 vti {
@@ -115,10 +115,10 @@ vpn {
                     esp-group AWS
                 }
             }
-            peer ${tunnel2_address} {
+            peer ${tunnel_2_address} {
                 authentication {
                     mode pre-shared-secret
-                    pre-shared-secret ${tunnel2_preshared_key}
+                    pre-shared-secret ${tunnel_2_preshared_key}
                 }
                 description "VPC tunnel 2"
                 ike-group AWS

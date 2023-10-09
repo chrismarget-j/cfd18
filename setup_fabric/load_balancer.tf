@@ -50,7 +50,7 @@ resource "null_resource" "lb_setup" {
       "if ! sudo ip link add link eth1 name ${self.triggers["intf"]} type vlan id ${self.triggers["vlan"]}; then :; fi",
       "if ! sudo ip link set dev eth1 up; then :; fi",
       "if ! sudo ip link set dev ${self.triggers["intf"]} up; then :; fi",
-      "if ! sudo ip addr add ${cidrhost(module.lb_net.subnet, 10)}/${split("/", module.lb_net.subnet)[1]} dev ${self.triggers["intf"]}; then :; fi",
+      "if ! sudo ip addr add ${cidrhost(module.lb_net.ipv4_subnet, 10)}/${split("/", module.lb_net.ipv4_subnet)[1]} dev ${self.triggers["intf"]}; then :; fi",
     ]
   }
 

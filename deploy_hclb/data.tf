@@ -30,6 +30,7 @@ data "apstra_datacenter_systems" "leaf_1" {
 
 data "apstra_datacenter_svis_map" "o" {
   blueprint_id = data.terraform_remote_state.setup_fabric.outputs["blueprint_id"]
+  depends_on = [module.apstra_transit_net]
 }
 
 data "external" "pub_ip" {

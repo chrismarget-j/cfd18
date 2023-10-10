@@ -2,7 +2,7 @@ terraform {
   required_providers {
     apstra = {
       source  = "Juniper/apstra"
-      version = "0.36.1"
+      version = "0.37.0"
     }
     aws = {
       source = "hashicorp/aws"
@@ -12,10 +12,6 @@ terraform {
       source  = "kreuzwerker/docker"
       version = "3.0.2"
     }
-#    haproxy = {
-#      source  = "SepehrImanian/haproxy"
-#      version = "0.0.7"
-#    }
   }
 }
 
@@ -31,9 +27,3 @@ provider "aws" {
 provider "docker" {
   host  = "tcp://${local.docker_host}:2375"
 }
-
-#provider "haproxy" {
-#  url         = "http://s4:5555"
-#  username    = "admin"
-#  password    = "mypassword"
-#}

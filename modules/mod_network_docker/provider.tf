@@ -6,7 +6,3 @@ terraform {
     }
   }
 }
-
-provider "docker" {
-  host = "tcp://s${var.worker_instance}:2375"
-}

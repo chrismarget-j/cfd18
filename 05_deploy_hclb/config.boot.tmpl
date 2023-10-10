@@ -29,11 +29,6 @@ system {
             }
         }
     }
-    ntp {
-        server "time1.vyos.net"
-        server "time2.vyos.net"
-        server "time3.vyos.net"
-    }
     console {
         device ttyS0 {
             speed "115200"
@@ -59,6 +54,9 @@ interfaces {
 protocols {
     bgp 1000 {
         neighbor ${leaf_1_ip} {
+            remote-as "external"
+        }
+        neighbor ${leaf_2_ip} {
             remote-as "external"
         }
         neighbor ${tunnel_1_vgw_inside_address} {

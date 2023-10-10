@@ -16,12 +16,16 @@ data "apstra_datacenter_ct_routing_policy" "bgp" {
 }
 
 locals {
-  vyos_fabric_ip = one([ for i in docker_container.vyos.network_data : i.ip_address if i.network_name == module.apstra_transit_net.name ])
+  vyos_fabric_ips = [
+    one([for i in docker_container.vyos.network_data : i.ip_address if i.network_name == module.apstra_transit_net[0].name]),
+    one([for i in docker_container.vyos.network_data : i.ip_address if i.network_name == module.apstra_transit_net[1].name]),
+  ]
 }
 
 data "apstra_datacenter_ct_bgp_peering_ip_endpoint" "bgp" {
-  name         = "VyOS BGP session"
-  ipv4_address = local.vyos_fabric_ip
+  count = 2
+  name         = "VyOS BGP session ${local.vyos_fabric_ips[count.index]}"
+  ipv4_address = local.vyos_fabric_ips[count.index]
   neighbor_asn = 1000
   child_primitives = [
     data.apstra_datacenter_ct_routing_policy.bgp.primitive
@@ -29,13 +33,15 @@ data "apstra_datacenter_ct_bgp_peering_ip_endpoint" "bgp" {
 }
 
 resource "apstra_datacenter_connectivity_template" "bgp" {
+  count = 2
   blueprint_id = data.terraform_remote_state.setup_fabric.outputs["blueprint_id"]
-  name         = "IPSec to AWS"
-  primitives   = [data.apstra_datacenter_ct_bgp_peering_ip_endpoint.bgp.primitive]
+  name         = "IPSec to AWS transit ${count.index + 1}"
+  primitives   = [data.apstra_datacenter_ct_bgp_peering_ip_endpoint.bgp[count.index].primitive]
 }
 
 resource "apstra_datacenter_connectivity_template_assignment" "svi_bgp" {
+  count = 2
   blueprint_id              = data.terraform_remote_state.setup_fabric.outputs["blueprint_id"]
-  application_point_id      = local.leaf_1_transit_svi_id
-  connectivity_template_ids = [apstra_datacenter_connectivity_template.bgp.id]
+  application_point_id      = local.leaf_transit_svi_ids[count.index]
+  connectivity_template_ids = [apstra_datacenter_connectivity_template.bgp[count.index].id]
 }

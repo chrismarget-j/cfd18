@@ -35,6 +35,15 @@ data "apstra_datacenter_systems" "leaf_1" {
   ]
 }
 
+data "apstra_datacenter_systems" "leaf_2" {
+  blueprint_id = data.terraform_remote_state.setup_fabric.outputs["blueprint_id"]
+  filters = [
+    {
+      label = "cfd_18_rack_002_leaf1"
+    }
+  ]
+}
+
 data "apstra_datacenter_svis_map" "o" {
   blueprint_id = data.terraform_remote_state.setup_fabric.outputs["blueprint_id"]
   depends_on   = [module.apstra_transit_net]
@@ -64,12 +73,13 @@ data "external" "pub_ip" {
 }
 
 locals {
-  #  transit_vn_id = module.apstra_transit_net.id
   leaf_1_id             = one(data.apstra_datacenter_systems.leaf_1.ids)
-  leaf_1_svi_ids        = data.apstra_datacenter_svis_map.o.by_system[one(data.apstra_datacenter_systems.leaf_1.ids)]
-  leaf_1_transit_svi_id = one([for svi in local.leaf_1_svi_ids : svi.id if svi.virtual_network_id == module.apstra_transit_net.id])
+  leaf_1_svis           = data.apstra_datacenter_svis_map.o.by_system[one(data.apstra_datacenter_systems.leaf_1.ids)]
+  leaf_1_transit_svi_id = one([for svi in local.leaf_1_svis : svi.id if svi.virtual_network_id == module.apstra_transit_net[0].id])
+
+  leaf_2_id             = one(data.apstra_datacenter_systems.leaf_2.ids)
+  leaf_2_svis           = data.apstra_datacenter_svis_map.o.by_system[one(data.apstra_datacenter_systems.leaf_2.ids)]
+  leaf_2_transit_svi_id = one([for svi in local.leaf_2_svis : svi.id if svi.virtual_network_id == module.apstra_transit_net[1].id])
+
+  leaf_transit_svi_ids = [local.leaf_1_transit_svi_id, local.leaf_2_transit_svi_id]
 }
-#output "svi" { value = data.terraform_remote_state.deploy_app.outputs["virtual_network_id"] }
-#output "svi" { value = [for svi in data.apstra_datacenter_svis_map.o.by_system[one(data.apstra_datacenter_systems.leaf_1.ids)] : svi if svi.virtual_network_id == data.terraform_remote_state.deploy_app.outputs["apstra_virtual_network_id"]] }
-#output "leaf_1_svi_ids" { value = local.leaf_1_svi_ids}
-#output "leaf_1_transit_svi_id" { value = local.leaf_1_transit_svi_id }

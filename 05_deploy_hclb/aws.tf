@@ -22,12 +22,6 @@ resource "aws_route" "o" {
   gateway_id = aws_internet_gateway.o.id
 }
 
-#resource "aws_vpn_gateway" "o" {
-#  vpc_id          = aws_vpc.o.id
-#  tags            = { Name = "cfd18" }
-#  amazon_side_asn = 7224
-#}
-
 resource "aws_vpn_gateway_attachment" "o" {
   vpc_id = aws_vpc.o.id
   vpn_gateway_id = data.terraform_remote_state.setup_aws.outputs["vpg_id"]
@@ -37,16 +31,3 @@ resource "aws_vpn_gateway_route_propagation" "example" {
   vpn_gateway_id = data.terraform_remote_state.setup_aws.outputs["vpg_id"]
   route_table_id = aws_vpc.o.main_route_table_id
 }
-
-#resource "aws_customer_gateway" "o" {
-#  bgp_asn     = 1000
-#  type        = "ipsec.1"
-#  ip_address  = data.external.pub_ip.result["ip"]
-#  device_name = "vyos"
-#}
-
-#resource "aws_vpn_connection" "main" {
-#  vpn_gateway_id      = aws_vpn_gateway.o.id
-#  customer_gateway_id = aws_customer_gateway.o.id
-#  type                = "ipsec.1"
-#}

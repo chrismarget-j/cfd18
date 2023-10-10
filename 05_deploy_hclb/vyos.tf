@@ -9,21 +9,25 @@ resource "docker_container" "vyos" {
   upload {
     file = "/opt/vyatta/etc/config/config.boot"
     content = templatefile("config.boot.tmpl", {
-        leaf_1_ip = cidrhost(module.apstra_transit_net.ipv4_subnet, 2)
+      leaf_1_ip = cidrhost(module.apstra_transit_net[0].ipv4_subnet, 2)
+      leaf_2_ip = cidrhost(module.apstra_transit_net[1].ipv4_subnet, 2)
 
-        tunnel_1_address            = data.terraform_remote_state.setup_aws.outputs["tunnel_1_address"]
-        tunnel_1_cgw_inside_address = data.terraform_remote_state.setup_aws.outputs["tunnel_1_cgw_inside_address"]
-        tunnel_1_vgw_inside_address = data.terraform_remote_state.setup_aws.outputs["tunnel_1_vgw_inside_address"]
-        tunnel_1_preshared_key      = data.terraform_remote_state.setup_aws.outputs["tunnel_1_preshared_key"]
+      tunnel_1_address            = data.terraform_remote_state.setup_aws.outputs["tunnel_1_address"]
+      tunnel_1_cgw_inside_address = data.terraform_remote_state.setup_aws.outputs["tunnel_1_cgw_inside_address"]
+      tunnel_1_vgw_inside_address = data.terraform_remote_state.setup_aws.outputs["tunnel_1_vgw_inside_address"]
+      tunnel_1_preshared_key      = data.terraform_remote_state.setup_aws.outputs["tunnel_1_preshared_key"]
 
-        tunnel_2_address            = data.terraform_remote_state.setup_aws.outputs["tunnel_2_address"]
-        tunnel_2_cgw_inside_address = data.terraform_remote_state.setup_aws.outputs["tunnel_2_cgw_inside_address"]
-        tunnel_2_vgw_inside_address = data.terraform_remote_state.setup_aws.outputs["tunnel_2_vgw_inside_address"]
-        tunnel_2_preshared_key      = data.terraform_remote_state.setup_aws.outputs["tunnel_2_preshared_key"]
-      })
+      tunnel_2_address            = data.terraform_remote_state.setup_aws.outputs["tunnel_2_address"]
+      tunnel_2_cgw_inside_address = data.terraform_remote_state.setup_aws.outputs["tunnel_2_cgw_inside_address"]
+      tunnel_2_vgw_inside_address = data.terraform_remote_state.setup_aws.outputs["tunnel_2_vgw_inside_address"]
+      tunnel_2_preshared_key      = data.terraform_remote_state.setup_aws.outputs["tunnel_2_preshared_key"]
+    })
   }
   networks_advanced {
-    name = module.apstra_transit_net.name
+    name = module.apstra_transit_net[0].name
+  }
+  networks_advanced {
+    name = module.apstra_transit_net[1].name
   }
   networks_advanced {
     name = "bridge"

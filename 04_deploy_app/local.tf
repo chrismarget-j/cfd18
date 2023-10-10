@@ -5,4 +5,5 @@ locals {
     "10.50.0.0/16",
     "10.60.0.0/16",
   ]
+  docker_interface = "eth1"
 }

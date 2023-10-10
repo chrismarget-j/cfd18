@@ -4,7 +4,7 @@ resource "null_resource" "vlan_change_trigger" {
   }
 }
 
-resource "docker_network" "web_s1" {
+resource "docker_network" "o" {
   name     = var.name
   driver   = "macvlan"
   ipam_config {
@@ -15,7 +15,7 @@ resource "docker_network" "web_s1" {
   options = {
     subnet  = var.subnet
     gateway = cidrhost(var.subnet, 1)
-    parent  = "${local.interface}.${var.vlan}"
+    parent  = "${var.interface}.${var.vlan}"
   }
   depends_on = [null_resource.vlan_change_trigger]
 }

@@ -1,5 +1,5 @@
 resource "apstra_datacenter_routing_zone" "cfd_18" {
-  name         = local.routing_zone_name
+  name         = var.routing_zone_name
   blueprint_id = apstra_datacenter_blueprint.cfd_18.id
 }
 

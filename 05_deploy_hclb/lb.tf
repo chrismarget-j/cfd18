@@ -59,7 +59,7 @@ resource "aws_key_pair" "o" {
 locals {
   haproxy_cfg_frontend = "frontend app\n  bind *:80\n  default_backend app\n\n"
   haproxy_cfg_backend  = "backend app\n  balance roundrobin\n"
-  haproxy_cfg_server   = "  server app-%s %s:80 check\n"
+  haproxy_cfg_server   = "  server app-%s %s:80\n"
   haproxy_cfg = join("", [
     "\n",
     local.haproxy_cfg_frontend,

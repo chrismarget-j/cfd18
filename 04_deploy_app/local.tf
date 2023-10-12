@@ -1,9 +1,6 @@
 locals {
-  container_name = "my_application"
-  webserver_count = 3
-  app_prefixes = [
-    "10.50.0.0/16",
-    "10.60.0.0/16",
-  ]
+  container_name   = var.app_name
+  webserver_count  = var.app_worker_count
+  app_prefixes     = var.app_prefixes
   docker_interface = "eth1"
 }

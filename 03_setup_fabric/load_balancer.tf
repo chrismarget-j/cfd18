@@ -1,9 +1,9 @@
 module "lb_net" {
   source          = "../modules/mod_apstra_network"
   blueprint_id    = apstra_datacenter_blueprint.cfd_18.id
-  name            = local.lb_net_name
+  name            = var.lb_net_name
   routing_zone_id = apstra_datacenter_routing_zone.cfd_18.id
-  ipv4_subnet     = local.lb_subnet
+  ipv4_subnet     = var.lb_subnet
 }
 
 data "apstra_datacenter_interfaces_by_link_tag" "lb" {

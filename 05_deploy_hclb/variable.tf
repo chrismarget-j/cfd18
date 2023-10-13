@@ -3,5 +3,5 @@ variable aws_cidr_block {
 }
 
 variable aws_lb_hostname {
-#  default = "cfd_18"
+#  default = "cfd"
 }
